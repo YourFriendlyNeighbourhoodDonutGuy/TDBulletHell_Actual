@@ -3,9 +3,10 @@
 //
 
 #include "../Headers/bullet.hpp"
-#include<math.h>
+#include<cmath>
 #include <iostream>
 
+//constructor for the bullet class
 bullet::bullet(float x, float y, float width, float height, sf::Color color){
     this-> state = bulletState::isIdle;
     this->x = x;
@@ -19,6 +20,7 @@ bullet::bullet(float x, float y, float width, float height, sf::Color color){
     shape.setFillColor(color);
 }
 
+//moves the bullet the agnle the player has rotated
 void bullet::move(const float VEL) {
     float dy = sin(rotateAngle.asRadians()) * VEL;
     float dx = cos(rotateAngle.asRadians()) * VEL;
@@ -26,6 +28,7 @@ void bullet::move(const float VEL) {
 
 }
 
+//checks boundary collisions and changes state to isCollided
 void bullet::collide(const sf::RenderWindow &window) {
     if (shape.getPosition().x >= window.getSize().x || shape.getPosition().y >= window.getSize().y || shape.getPosition().x <= 0 || shape.getPosition().y <= 0) {
         this->state = bulletState::isCollided;

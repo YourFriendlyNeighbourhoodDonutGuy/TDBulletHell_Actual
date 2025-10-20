@@ -29,7 +29,6 @@ void player::draw(sf::RenderWindow &window) {
     }
 
 
-
 }
 
 void player::move(sf::Angle rotateAngle) {
@@ -63,6 +62,7 @@ void player::bulletHandler(const std::optional<sf::Event>& event) {
         }
     }
     Bullets.erase(
+        // an expression to remove bullets from a vector starting from the beginning to the end of the vector.
          std::remove_if(Bullets.begin(), Bullets.end(), [this](bullet& b) {
              if (b.getState() == bulletState::isCollided) {
                  std::cout << Bullets.size() << std::endl;

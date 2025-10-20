@@ -7,7 +7,9 @@ add_executable(clion_Test src/main.cpp
         src/player.cpp
         Headers/player.hpp
         src/bullet.cpp
-        Headers/bullet.hpp)
+        Headers/bullet.hpp
+        Headers/enemy.hpp
+        src/enemy.cpp)
 
 include_directories(./Headers)
 find_package(SFML COMPONENTS Network Graphics Window Audio System CONFIG REQUIRED)

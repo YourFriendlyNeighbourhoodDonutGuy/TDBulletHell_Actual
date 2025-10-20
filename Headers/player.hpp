@@ -15,6 +15,7 @@ private:
     float width = 0;
     float height = 0;
     int capacity = 0;
+    int health = 0;
     std::vector<bullet> Bullets;
     sf::Angle rotateAngle;
     sf::Color color;
