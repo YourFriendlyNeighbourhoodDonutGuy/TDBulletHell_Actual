@@ -34,7 +34,7 @@ int main() {
         player.draw(window);
         player.move(sf::radians(0.1f));
         enemy.spawn(window);
-        enemy.draw(window);
+        enemy.draw(window, playerPosX, playerPosY );
         window.display();
     }
 }

@@ -43,8 +43,8 @@ void player::move(sf::Angle rotateAngle) {
 
 void player::bulletHandler(const std::optional<sf::Event>& event) {
     // if there are no bullets, then create bullets but don't draw them now
-    if (Bullets.empty() && sf::Keyboard::isKeyPressed( sf::Keyboard::Key::R)){
-        for (int i = 0; i < capacity; i++) {
+    if (Bullets.size() < capacity && sf::Keyboard::isKeyPressed( sf::Keyboard::Key::R)){
+        for (int i = 0; i < Bullets.size() - capacity; i++) {
             bullet bullet{this->shape.getPosition().x, this->shape.getPosition().y, 10, 10, sf::Color::Yellow};
             Bullets.push_back(bullet);
             std::cout << this->shape.getPosition().x << std::endl;
@@ -72,6 +72,7 @@ void player::bulletHandler(const std::optional<sf::Event>& event) {
          }),
          Bullets.end());
 }
+
 
 
 

@@ -11,6 +11,7 @@ class enemy{
 private:
     float x = 0;
     float y = 0;
+    float VEL = 3;
     float width = 0;
     float height = 0;
     int capacity = 0;
@@ -24,8 +25,10 @@ public:
     //spawning the enemies into the screen
     void spawn(sf::RenderWindow &window);
 
+    void move(float playerPosX, float playerPosY);
+
     //Draw function to be passed into the spawn function
-    void draw(sf::RenderWindow &window);
+    void draw(sf::RenderWindow &window, float playerPosX, float playerPosY);
     // be able to get the width of the enemy
     float getWidth();
 
