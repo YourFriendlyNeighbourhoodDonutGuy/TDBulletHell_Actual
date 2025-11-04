@@ -3,11 +3,13 @@
 
 #include <random>
 
-enemy::enemy(float x, float y ,float width, float height, sf::Color color, int capacity, int enemyCapacity){
+enemy::enemy(float x, float y ,float width, float height, int health, int damage,sf::Color color, int capacity, int enemyCapacity){
     this-> x = x;
     this-> y = y;
     this->width = width;
     this->height = height;
+    this->health = health;
+    this->damage = damage;
     this->color = color;
     this->capacity = capacity;
     this->enemyCapacity = enemyCapacity;
@@ -34,33 +36,36 @@ void enemy::spawn(sf::RenderWindow &window) {
                 enemyPosY = 0.f;
             }
 
-            enemy Enemy(enemyPosX, enemyPosY, this->width, this->height, this->color, this->capacity, this->enemyCapacity);
+            enemy Enemy(enemyPosX, enemyPosY, this->width, this->height, this->health,this->damage,this->color, this->capacity, this->enemyCapacity);
             Enemies.push_back(Enemy);
             std::cout << enemyPosX << "\n";
         }
     }
 
-}void enemy::move(float playerPosX, float playerPosY) {
+}
+
+void enemy::move(player &player) {
     //make the enemies move towards the player
-    float dx = 0.1f;
-    float dy = 0.1f;
-        if (shape.getPosition().x < playerPosX) {
-            dx += this->VEL;
+    sf::Vector2f movement = {0.1f, 0.1f};
+        if (shape.getPosition().x < player.getPosition().x) {
+             movement.x += this->VEL;
         }
-        if (shape.getPosition().x > playerPosX) {
-            dx -= this->VEL;
-        }
-
-
-        if (shape.getPosition().y< playerPosY) {
-            dy += this->VEL;
-
-        }
-        if (shape.getPosition().y > playerPosY) {
-            dy -= this->VEL;
+        if (shape.getPosition().x > player.getPosition().x) {
+            movement.x -= this->VEL;
         }
 
-        shape.move({dx,dy});
+
+        if (shape.getPosition().y< player.getPosition().y) {
+            movement.y += this->VEL;
+
+        }
+        if (shape.getPosition().y > player.getPosition().y) {
+            movement.y -= this->VEL;
+        }
+
+        shape.move(movement);
+
+        collision(player, movement);
 
     //rotate enemies to face the player
     //use radians
@@ -69,13 +74,31 @@ void enemy::spawn(sf::RenderWindow &window) {
 
 
 
-void enemy::draw(sf::RenderWindow &window, float playerPosX, float playerPosY) {
+void enemy::draw(sf::RenderWindow &window, player &player) {
     for (enemy& e: Enemies) {
-        e.move(playerPosX, playerPosY);
         window.draw(e.shape);
+        e.move(player);
     }
 
 }
+
+void enemy::collision(player &player, sf::Vector2f movement) {
+    int playerHealth = player.getHealth();
+
+    // handle damage dealt when enemy has collided with player
+    sf::FloatRect shapeBounds = shape.getGlobalBounds();
+    sf::FloatRect playerBounds = player.getBounds();
+    std::optional<sf::FloatRect> playerIntersection = shapeBounds.findIntersection(playerBounds);
+    if (playerIntersection.has_value()) {
+        playerHealth = playerHealth - this->damage;
+        shape.move(-movement);
+    }
+
+    player.setHealth(playerHealth);
+
+
+}
+
 
 float enemy::getWidth() {
     return this->width;

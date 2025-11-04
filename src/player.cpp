@@ -4,11 +4,12 @@
 #include <iostream>
 #include "player.hpp"
 #include "../Headers/bullet.hpp"
-player::player(float x, float y, float width, float height, sf::Color color, int capacity) {
+player::player(float x, float y, float width, float height, int health, sf::Color color, int capacity) {
     this->x = x;
     this->y = y;
     this->width = width;
     this->height = height;
+    this->health = health;
     this->color = color;
     this->capacity = capacity;
     shape.setSize(sf::Vector2f(width, height));
@@ -73,6 +74,25 @@ void player::bulletHandler(const std::optional<sf::Event>& event) {
          Bullets.end());
 }
 
+sf::Vector2f player::getPosition() {
+    return shape.getPosition();
+}
+
+sf::Vector2f player::getSize() {
+    return shape.getSize();
+}
+
+int player::getHealth() {
+    return health;
+}
+
+void player::setHealth(int health) {
+    this->health = health;
+}
+
+sf::FloatRect player::getBounds() {
+    return this->shape.getGlobalBounds();
+}
 
 
 

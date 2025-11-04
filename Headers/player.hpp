@@ -21,7 +21,7 @@ private:
     sf::Color color;
     sf::RectangleShape shape;
 public:
-    player(float x, float y ,float width, float height, sf::Color color, int capacity);
+    player(float x, float y ,float width, float height, int health,sf::Color color, int capacity);
     //handles drawing the player to the screen
     void draw(sf::RenderWindow &window);
 
@@ -29,6 +29,15 @@ public:
     void move(sf::Angle rotateAngle);
 
     void bulletHandler(const std::optional<sf::Event>& event);
+
+    sf::Vector2f getPosition();
+    sf::Vector2f getSize();
+
+    int getHealth();
+
+    void setHealth(int health);
+
+    sf::FloatRect getBounds();
 
 
 

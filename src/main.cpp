@@ -17,9 +17,9 @@ int main() {
     const float playerPosY = window.getSize().y / 2;
 
     //enemy variables
-    enemy enemy(1.f,2.f,30.f,30.5,sf::Color::Red, 8, 5);
+    enemy enemy(1.f,2.f,30.f,30.f,100,25 ,sf::Color::Red, 8, 5);
 
-    player player{playerPosX, playerPosY, 30.0f, 30.0f, sf::Color::White, 8};
+    player player{playerPosX, playerPosY, 30.0f, 30.0f, 100,sf::Color::White, 8};
 
     window.setFramerateLimit(60);
     while (window.isOpen()) {
@@ -34,7 +34,7 @@ int main() {
         player.draw(window);
         player.move(sf::radians(0.1f));
         enemy.spawn(window);
-        enemy.draw(window, playerPosX, playerPosY );
+        enemy.draw(window, player);
         window.display();
     }
 }
