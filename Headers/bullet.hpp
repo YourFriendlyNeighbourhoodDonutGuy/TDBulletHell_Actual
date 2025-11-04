@@ -26,6 +26,7 @@ public:
     bullet(float x, float y, float width, float height, sf::Color color);
     void move(float VEL);
     void collide(const sf::RenderWindow &window);
+    void entityCollision(const sf::RenderWindow &window);
     void setState(bulletState state);
     void setAngle(sf::Angle rotateAngle);
     bulletState getState();

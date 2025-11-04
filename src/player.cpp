@@ -4,11 +4,12 @@
 #include <iostream>
 #include "player.hpp"
 #include "../Headers/bullet.hpp"
-player::player(float x, float y, float width, float height, sf::Color color, int capacity) {
+player::player(float x, float y, float width, float height, int health, sf::Color color, int capacity) {
     this->x = x;
     this->y = y;
     this->width = width;
     this->height = height;
+    this->health = health;
     this->color = color;
     this->capacity = capacity;
     shape.setSize(sf::Vector2f(width, height));
@@ -29,7 +30,6 @@ void player::draw(sf::RenderWindow &window) {
     }
 
 
-
 }
 
 void player::move(sf::Angle rotateAngle) {
@@ -44,8 +44,8 @@ void player::move(sf::Angle rotateAngle) {
 
 void player::bulletHandler(const std::optional<sf::Event>& event) {
     // if there are no bullets, then create bullets but don't draw them now
-    if (Bullets.empty() && sf::Keyboard::isKeyPressed( sf::Keyboard::Key::R)){
-        for (int i = 0; i < capacity; i++) {
+    if (Bullets.size() < capacity && sf::Keyboard::isKeyPressed( sf::Keyboard::Key::R)){
+        for (int i = 0; i < Bullets.size() - capacity; i++) {
             bullet bullet{this->shape.getPosition().x, this->shape.getPosition().y, 10, 10, sf::Color::Yellow};
             Bullets.push_back(bullet);
             std::cout << this->shape.getPosition().x << std::endl;
@@ -63,6 +63,7 @@ void player::bulletHandler(const std::optional<sf::Event>& event) {
         }
     }
     Bullets.erase(
+        // an expression to remove bullets from a vector starting from the beginning to the end of the vector.
          std::remove_if(Bullets.begin(), Bullets.end(), [this](bullet& b) {
              if (b.getState() == bulletState::isCollided) {
                  std::cout << Bullets.size() << std::endl;
@@ -71,6 +72,26 @@ void player::bulletHandler(const std::optional<sf::Event>& event) {
              return false; // Keep it
          }),
          Bullets.end());
+}
+
+sf::Vector2f player::getPosition() {
+    return shape.getPosition();
+}
+
+sf::Vector2f player::getSize() {
+    return shape.getSize();
+}
+
+int player::getHealth() {
+    return health;
+}
+
+void player::setHealth(int health) {
+    this->health = health;
+}
+
+sf::FloatRect player::getBounds() {
+    return this->shape.getGlobalBounds();
 }
 
 
