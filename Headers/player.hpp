@@ -7,6 +7,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "bullet.hpp"
+#include <vector>
 
 class player {
 private:
@@ -34,6 +35,10 @@ public:
     sf::Vector2f getSize();
 
     int getHealth();
+
+    std::vector<bullet>& getBullets();
+
+    void setBullets(std::vector<bullet>);
 
     void setHealth(int health);
 
