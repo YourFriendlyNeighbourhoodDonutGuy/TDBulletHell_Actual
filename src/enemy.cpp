@@ -1,6 +1,7 @@
 #include <iostream>
-#include "../Headers/enemy.hpp"
-
+#include "enemy.hpp"
+#include "bullet.hpp"
+#include "player.hpp"
 #include <random>
 
 enemy::enemy(float x, float y ,float width, float height, int health, int damage,sf::Color color, int capacity, int enemyCapacity){
@@ -38,7 +39,6 @@ void enemy::spawn(sf::RenderWindow &window) {
 
             enemy Enemy(enemyPosX, enemyPosY, this->width, this->height, this->health,this->damage,this->color, this->capacity, this->enemyCapacity);
             Enemies.push_back(Enemy);
-            std::cout << enemyPosX << "\n";
         }
     }
 
@@ -47,8 +47,9 @@ void enemy::spawn(sf::RenderWindow &window) {
 void enemy::move(player &player) {
     //make the enemies move towards the player
     sf::Vector2f movement = {0.1f, 0.1f};
+    if (this->health > 0){
         if (shape.getPosition().x < player.getPosition().x) {
-             movement.x += this->VEL;
+            movement.x += this->VEL;
         }
         if (shape.getPosition().x > player.getPosition().x) {
             movement.x -= this->VEL;
@@ -67,30 +68,40 @@ void enemy::move(player &player) {
 
         collision(player, movement);
 
-    //rotate enemies to face the player
-    //use radians
+        //rotate enemies to face the player
+        //use radians
+    }
 }
-
 
 
 
 void enemy::draw(sf::RenderWindow &window, player &player) {
     for (enemy& e: Enemies) {
-        window.draw(e.shape);
-        e.move(player);
+        std::vector<bullet> player_bullet = player.getBullets();
+        if (e.state == enemyState::isAlive) {
+            window.draw(e.shape);
+            e.move(player);
+            for (bullet& bull : player.getBullets()) {
+                bull.enemyCollision(window, e);
+            }
+        }
+        if (e.state == enemyState::isDead) {
+            e.Remove();
+        }
     }
 
 }
 
 void enemy::collision(player &player, sf::Vector2f movement) {
     int playerHealth = player.getHealth();
-
     // handle damage dealt when enemy has collided with player
-    sf::FloatRect shapeBounds = shape.getGlobalBounds();
+    sf::FloatRect shapeBounds = this->shape.getGlobalBounds();
     sf::FloatRect playerBounds = player.getBounds();
     std::optional<sf::FloatRect> playerIntersection = shapeBounds.findIntersection(playerBounds);
     if (playerIntersection.has_value()) {
-        playerHealth = playerHealth - this->damage;
+        if (playerHealth > 0) {
+            playerHealth = playerHealth - this->damage;
+        }
         shape.move(-movement);
     }
 
@@ -99,10 +110,46 @@ void enemy::collision(player &player, sf::Vector2f movement) {
 
 }
 
+void enemy::Remove() {
+    Enemies.erase(
+       // an expression to remove bullets from a vector starting from the beginning to the end of the vector.
+        std::remove_if(Enemies.begin(), Enemies.end(), [this](enemy& e) {
+            if (e.state == enemyState::isDead) {
+                std::cout << "this happens";
+                return true;
+            }
+            return false;
+        }),
+        Enemies.end());
+}
+
 
 float enemy::getWidth() {
     return this->width;
 }
+
+sf::FloatRect enemy::getBounds() {
+    return shape.getGlobalBounds();
+}
+
+void enemy::setHealth(int health) {
+    this->health = health;
+}
+
+int enemy::getHealth() {
+    return this->health;
+}
+
+enemyState enemy::getState() {
+    return this->state = state;
+}
+
+void enemy::setState(enemyState state) {
+    this->state = state;
+}
+
+
+
 
 
 

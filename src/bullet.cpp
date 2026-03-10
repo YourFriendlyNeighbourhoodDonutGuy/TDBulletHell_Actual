@@ -3,16 +3,18 @@
 //
 
 #include "../Headers/bullet.hpp"
+#include "enemy.hpp"
 #include<cmath>
 #include <iostream>
 
 //constructor for the bullet class
-bullet::bullet(float x, float y, float width, float height, sf::Color color){
+bullet::bullet(float x, float y, float width, float height, int damage,  sf::Color color){
     this-> state = bulletState::isIdle;
     this->x = x;
     this->y = y;
     this->width = width;
     this->height = height;
+    this->damage = damage;
     this->color = color;
     shape.setSize(sf::Vector2f(width, height));
     shape.setPosition({x,y});
@@ -33,8 +35,28 @@ void bullet::collide(const sf::RenderWindow &window) {
     if (shape.getPosition().x >= window.getSize().x || shape.getPosition().y >= window.getSize().y || shape.getPosition().x <= 0 || shape.getPosition().y <= 0) {
         this->state = bulletState::isCollided;
     }
-    std::cout << this->x << ", " << this->y << std::endl;
 }
+
+void bullet::enemyCollision(const sf::RenderWindow &window, enemy &Enemy) {
+    sf::FloatRect bulletBounds = this -> shape.getGlobalBounds();
+    sf::FloatRect enemyBounds = Enemy.getBounds();
+    int enemyHealth = Enemy.getHealth();
+
+    std::optional <sf::FloatRect> bulletIntersection = bulletBounds.findIntersection(enemyBounds);
+
+    if (bulletIntersection.has_value() && enemyHealth > 0 && bullet::state == bulletState::isFired) {
+        enemyHealth -= this->damage;
+        this->state = bulletState::isCollided;
+    }
+    if (enemyHealth <=0 ) {
+        Enemy.setState(enemyState::isDead);
+    }
+
+    Enemy.setHealth(enemyHealth);
+
+
+}
+
 
 void bullet::setState(bulletState state) {
     this->state = state;
